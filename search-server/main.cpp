@@ -89,11 +89,11 @@ public:
         
         sort(matched_documents.begin(), matched_documents.end(),
              [](const Document& lhs, const Document& rhs) {
-                if (abs(lhs.relevance - rhs.relevance) < 1e-6) {
+                if (abs(lhs.relevance - rhs.relevance) < std::numeric_limits<double>::epsilon()) {
                     return lhs.rating > rhs.rating;
-                } else {
+                } 
                     return lhs.relevance > rhs.relevance;
-                }
+
              });
         if (matched_documents.size() > MAX_RESULT_DOCUMENT_COUNT) {
             matched_documents.resize(MAX_RESULT_DOCUMENT_COUNT);
@@ -102,7 +102,7 @@ public:
     }
  
     vector<Document> FindTopDocuments(const string& raw_query) const {            
-        return FindTopDocuments(raw_query, [](int document_id, DocumentStatus status, int rating) { return status == DocumentStatus::ACTUAL; });
+        return FindTopDocuments(raw_query, DocumentStatus::ACTUAL);
     }
  
     int GetDocumentCount() const {
@@ -203,7 +203,8 @@ private:
         }
         return query;
     }
-
+    
+    // Existence required
     double ComputeWordInverseDocumentFreq(const string& word) const {
         return log(GetDocumentCount() * 1.0 / word_to_document_freqs_.at(word).size());
     }
