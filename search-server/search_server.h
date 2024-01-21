@@ -15,7 +15,7 @@
 
 
 constexpr int MAX_RESULT_DOCUMENT_COUNT = 5;
-
+constexpr auto EPSILON = 1e-6;
 
 template <typename StringContainer>
 std::set<std::string> MakeUniqueNonEmptyStrings(const StringContainer& strings) {
@@ -58,7 +58,7 @@ public:
     std::sort(matched_documents.begin(), matched_documents.end(),
               [](const Document& lhs, const Document& rhs) {
                   return lhs.relevance > rhs.relevance ||
-                         (std::abs(lhs.relevance - rhs.relevance) < 1e-6 && lhs.rating > rhs.rating);
+                         (std::abs(lhs.relevance - rhs.relevance) <EPSILON && lhs.rating > rhs.rating);
               });
     if (matched_documents.size() > MAX_RESULT_DOCUMENT_COUNT) {
         matched_documents.resize(MAX_RESULT_DOCUMENT_COUNT);
